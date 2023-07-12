@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "Santa Biblia",
-    "slug": "holy-bible",
+    "name": "U2",
+    "slug": "u2",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/BibleIcon.png",
+    "icon": "./assets/images/u2.icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
