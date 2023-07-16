@@ -58,6 +58,31 @@ const Downloader = (props) => {
         setSelectedFormat(value);
     };
 
+    const downloadMedia = async (token) => {
+
+        const formdata = new FormData();
+        formdata.append("vid", props.id);
+        formdata.append("k", token);
+
+        const requestOptions = {
+            method: 'POST',
+            body: formdata,
+            redirect: 'follow'
+        };
+        let res = await fetch('https://tomp3.cc/api/ajax/convert', requestOptions)
+        let data = await res.json()
+
+        let link = data.dlink
+        let name = data.title
+        let author = props.author
+        let type = data.ftype
+
+        let filename = `${name}.${type}`
+
+        console.log(filename, author)
+        // algoritmo o script para guardar el archivo en storage/u2/${type}/${filename}
+    }
+
     const renderItem = ({ item }) => {
         let key = `${item.token}-${item.quality}-${item.size || "any"}`;
         return (
@@ -66,7 +91,7 @@ const Downloader = (props) => {
                     key={key}
                     title={`${item.quality} ${item.size ? `[${item.size}]` : ""}`.trim()}
                     color="rgba(3, 141, 232, 255)"
-                />
+                    onPress={() => downloadMedia(item.token)}/>
             </View>
         );
     };
