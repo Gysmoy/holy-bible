@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native"
 import Logo from '../images/u2.icon.png'
 
@@ -7,10 +6,10 @@ const Banner = (props) => {
         <View style={props.processed ? Style.banner : Style.home}>
             <Image source={Logo} style={{ ...Style.image, display: props.processed ? 'none' : 'flex' }} />
             <Text style={{ ...Style.title, display: props.processed ? 'none' : 'flex' }}>U2 by SoDe World</Text>
-            <TextInput style={Style.input} placeholder="Ingresa una URL o descripción" onChangeText={props.setValue} value={props.value} />
+            <TextInput style={Style.input} placeholder="Ingresa una URL o descripción" onChangeText={props.setValue} value={props.value}/>
             <View style={Style.container}>
                 <View style={{ borderRadius: 5, overflow: 'hidden' }}>
-                    <Button title="🜛 Convertir" onPress={() => props.searchVideo(props.value)} />
+                    <Button title="🜛 Convertir" onPress={() => props.searchVideo(props.value)} color='rgba(3, 141, 232, 255)'/>
                 </View>
                 <View style={{ borderRadius: 5, overflow: 'hidden', display: props.processed ? 'flex' : 'none' }} >
                     <Button title='← Volver' onPress={props.goHome} color='#fd4051' />

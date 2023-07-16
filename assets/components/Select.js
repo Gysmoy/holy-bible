@@ -15,7 +15,7 @@ const Select = (props) => {
     return (
         <>
             <TouchableHighlight onPress={() => setModalVisible(true)} style={props.style}>
-                <Text>{selectedOption ? `${selectedOption.label} ‣` : '‣'}</Text>
+                <Text style={{ color: '#fff', fontSize: 16 }}>{selectedOption ? `${selectedOption.label} ‣` : '‣'}</Text>
             </TouchableHighlight>
             <Modal
                 visible={modalVisible}

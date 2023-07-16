@@ -1,5 +1,6 @@
-import { Button, Image, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
+import { ScrollView, StyleSheet, Text, View } from "react-native"
 import Search from "./Search"
+import Downloader from "./Downloader"
 
 const Main = (props) => {
     const getURI = (id) => {
@@ -9,14 +10,14 @@ const Main = (props) => {
         <ScrollView style={{ ...Style.main, display: props.processed ? 'flex' : 'none' }}>
             {
                 props.result.p === 'search'
-                    ? props.result.items.map(e => <Search id={e.v} title={e.t} uri={getURI(e.v)} setValue={props.setValue} searchVideo={props.searchVideo}/>)
+                    ? props.result.items.map(e => <Search id={e.v} title={e.t} uri={getURI(e.v)} setValue={props.setValue} searchVideo={props.searchVideo} />)
                     : <>
-                        <Image key={props.id} source={{ uri: getURI(props.result.vid) }} style={Style.image} />
-                        <View style={Style.titleContainer}>
-                            <Text style={Style.title}>{props.result.title}</Text>
-                            <Text style={Style.uri}>{`youtu.be/${props.result.vid}`}</Text>
-                        </View>
-                        <View style={Style.hr}/>
+                        <Downloader id={props.result.vid} title={props.result.title} author={props.result.a} image={getURI(props.result.vid)} links={props.result.links} />
+                        <View style={Style.hr} />
+                        <Text style={Style.related}>Videos relacionados</Text>
+                        {
+                            props.result.related[0].contents.map(e => <Search id={e.vid} title={e.title} uri={getURI(e.vid)} setValue={props.setValue} searchVideo={props.searchVideo} />)
+                        }
                     </>
 
             }
@@ -42,24 +43,11 @@ const Style = StyleSheet.create({
         marginBottom: 10,
         gap: 5
     },
-    image: {
-        alignSelf: 'center',
-        width: 240,
-        height: 180,
-        borderRadius: 5
-    },
-    title: {
-        marginTop: 10,
-        textAlign: 'center',
+    related: {
         color: '#ffffff',
-        fontSize: 18,
+        marginBottom: 10,
+        fontSize: 16,
         fontWeight: 'bold'
-    },
-    uri: {
-        color: 'rgba(255, 255, 255, .75)',
-        textAlign: 'center',
-        fontSize: 14,
-        marginTop: 5
     }
 })
 
