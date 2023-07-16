@@ -38,6 +38,7 @@ const Main = (props) => {
                     author={props.result.a}
                     image={getURI(props.result.vid)}
                     links={props.links}
+                    setProcessing={props.setProcessing}
                 />
                 <View style={Style.hr} />
                 <Text style={Style.related}>Videos relacionados</Text>

@@ -61,6 +61,7 @@ const App = () => {
           links={links}
           setValue={setValue}
           searchVideo={searchVideo}
+          setProcessing={setProcessing}
         />
       )}
       {processing && (

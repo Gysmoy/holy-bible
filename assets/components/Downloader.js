@@ -1,4 +1,4 @@
-import { Image, View, Text, StyleSheet, Button, FlatList } from "react-native";
+import { Image, View, Text, StyleSheet, Button, FlatList, Linking } from "react-native";
 import Select from "./Select";
 import { useState, useEffect, useRef } from "react";
 
@@ -60,6 +60,8 @@ const Downloader = (props) => {
 
     const downloadMedia = async (token) => {
 
+        props.setProcessing(true)
+
         const formdata = new FormData();
         formdata.append("vid", props.id);
         formdata.append("k", token);
@@ -79,8 +81,12 @@ const Downloader = (props) => {
 
         let filename = `${name}.${type}`
 
-        console.log(filename, author)
-        // algoritmo o script para guardar el archivo en storage/u2/${type}/${filename}
+        props.setProcessing(false)
+
+        Linking.openURL(link)
+            .catch((error) => {
+                console.error('Error al abrir el enlace:', error);
+            });
     }
 
     const renderItem = ({ item }) => {
