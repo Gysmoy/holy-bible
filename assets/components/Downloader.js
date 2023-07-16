@@ -31,6 +31,13 @@ const Downloader = (props) => {
                 let q_a = Number(a.quality.replace(/[^0-9.-]/g, "") || "0");
                 let q_b = Number(b.quality.replace(/[^0-9.-]/g, "") || "0");
                 return q_a - q_b;
+            }).map((item, x) => {
+                if (item.size == 'MB') {
+                    let lastSize = Number(String(items[x - 1]?.size).replace(/[^0-9.-]/g, '') || 0)
+                    let nextSize = Number(String(items[x + 1]?.size).replace(/[^0-9.-]/g, '') || 0)
+                    item.size = `${(lastSize + nextSize) / 2} MB`
+                }
+                return item
             });
             return items;
         };
