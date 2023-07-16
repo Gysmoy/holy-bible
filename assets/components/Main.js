@@ -12,7 +12,7 @@ const Main = (props) => {
                 props.result.p === 'search'
                     ? props.result.items.map(e => <Search id={e.v} title={e.t} uri={getURI(e.v)} setValue={props.setValue} searchVideo={props.searchVideo} />)
                     : <>
-                        <Downloader id={props.result.vid} title={props.result.title} author={props.result.a} image={getURI(props.result.vid)} links={props.result.links} />
+                        <Downloader id={props.result.vid} title={props.result.title} author={props.result.a} image={getURI(props.result.vid)} links={props.links} />
                         <View style={Style.hr} />
                         <Text style={Style.related}>Videos relacionados</Text>
                         {

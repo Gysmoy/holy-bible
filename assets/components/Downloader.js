@@ -1,6 +1,6 @@
 import { Image, View, Text, StyleSheet, Button, FlatList } from "react-native"
 import Select from "./Select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Downloader = (props) => {
     let formats = Object.keys(props.links)?.map(f => {
@@ -10,37 +10,45 @@ const Downloader = (props) => {
         }
     })
 
-    const formatQuality = (value) => {
-        let qs = props.links[value]
-        let items = []
-        for (const i in qs) {
-            let item = qs[i]
-            items.push({
-                token: item.k,
-                quality: item.q,
-                label: item.q_text,
-                size: item.size
-            })
-        }
-        items = items.sort((a, b) => {
-            let q_a = Number(a.quality.replace(/[^0-9.-]/g, '') || '0');
-            let q_b = Number(b.quality.replace(/[^0-9.-]/g, '') || '0');
-            return q_a - q_b
-        })
-        return items
-    }
+    const [selectedFormat, setSelectedFormat] = useState(formats[0]?.value)
+    const [qualities, setQualities] = useState([])
 
-    const [qualities, setQualities] = useState(formatQuality(formats[0].value))
+    useEffect(() => {
+        const formatQuality = (value) => {
+            let qs = props.links[value]
+            let items = []
+            for (const i in qs) {
+                let item = qs[i]
+                items.push({
+                    token: item.k,
+                    quality: item.q,
+                    label: item.q_text,
+                    size: item.size
+                })
+            }
+            items = items.sort((a, b) => {
+                let q_a = Number(a.quality.replace(/[^0-9.-]/g, '') || '0');
+                let q_b = Number(b.quality.replace(/[^0-9.-]/g, '') || '0');
+                return q_a - q_b
+            })
+            return items
+        }
+
+        const newQualities = formatQuality(selectedFormat);
+        setQualities(newQualities);
+    }, [props.links, selectedFormat])
 
     const onFormatChange = (value) => {
-        let items = formatQuality(value)
-        setQualities(items)
+        setSelectedFormat(value)
     }
+
     const renderItem = ({ item }) => {
-        let key = `${item.token}-${item.quality}-${item.size || 'any'}`
-        return <View style={Style.downloadButton} >
-            <Button key={key} title={`${item.quality} ${item.size ? `[${item.size}]` : ''}`.trim()} color='rgba(3, 141, 232, 255)' />
-        </View>;
+        let key = `${item.token}-${item.quality}-${item.size || 'any'}`;
+        return (
+            <View style={Style.downloadButton}>
+                <Button key={key} title={`${item.quality} ${item.size ? `[${item.size}]` : ''}`.trim()} color='rgba(3, 141, 232, 255)' />
+            </View>
+        );
     };
 
     return (
@@ -56,8 +64,9 @@ const Downloader = (props) => {
                 data={qualities}
                 horizontal
                 renderItem={renderItem}
-                keyExtractor={(item) => item.toString()}
-                style={Style.downloadButtonContainer} />
+                keyExtractor={(item, index) => `${item.token}-${index}`}
+                style={Style.downloadButtonContainer}
+            />
         </>
     )
 }
@@ -66,7 +75,7 @@ const Style = StyleSheet.create({
     image: {
         alignSelf: 'center',
         width: 240,
-        height: 180,
+        height: 150,
         borderRadius: 5
     },
     title: {
