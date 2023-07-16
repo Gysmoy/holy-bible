@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { StatusBar, StyleSheet, Text, View } from 'react-native';
-import { BlurView } from '@react-native-community/blur';
 
 import Banner from './assets/components/Banner';
 import Main from './assets/components/Main';

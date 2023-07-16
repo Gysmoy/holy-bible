@@ -1,54 +1,92 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native"
-import Search from "./Search"
-import Downloader from "./Downloader"
+import React, { useEffect, useRef } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import Search from "./Search";
+import Downloader from "./Downloader";
 
 const Main = (props) => {
-    const getURI = (id) => {
-        return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
-    }
-    return (
-        <ScrollView style={{ ...Style.main, display: props.processed ? 'flex' : 'none' }}>
-            {
-                props.result.p === 'search'
-                    ? props.result.items.map(e => <Search id={e.v} title={e.t} uri={getURI(e.v)} setValue={props.setValue} searchVideo={props.searchVideo} />)
-                    : <>
-                        <Downloader id={props.result.vid} title={props.result.title} author={props.result.a} image={getURI(props.result.vid)} links={props.links} />
-                        <View style={Style.hr} />
-                        <Text style={Style.related}>Videos relacionados</Text>
-                        {
-                            props.result.related[0].contents.map(e => <Search id={e.vid} title={e.title} uri={getURI(e.vid)} setValue={props.setValue} searchVideo={props.searchVideo} />)
-                        }
-                    </>
+    const scrollViewRef = useRef(null);
 
-            }
+    useEffect(() => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollTo({ y: 0 });
+        }
+    }, [props.result]);
+
+    const getURI = (id) => {
+        return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    };
+
+    let content = null;
+
+    if (props.result.p === "search") {
+        content = props.result.items.map((e) => (
+            <Search
+                key={e.v}
+                id={e.v}
+                title={e.t}
+                uri={getURI(e.v)}
+                setValue={props.setValue}
+                searchVideo={props.searchVideo}
+            />
+        ));
+    } else if (props.result.related && props.result.related.length > 0) {
+        content = (
+            <>
+                <Downloader
+                    id={props.result.vid}
+                    title={props.result.title}
+                    author={props.result.a}
+                    image={getURI(props.result.vid)}
+                    links={props.links}
+                />
+                <View style={Style.hr} />
+                <Text style={Style.related}>Videos relacionados</Text>
+                {props.result.related[0].contents.map((e) => (
+                    <Search
+                        key={e.vid}
+                        id={e.vid}
+                        title={e.title}
+                        uri={getURI(e.vid)}
+                        setValue={props.setValue}
+                        searchVideo={props.searchVideo}
+                    />
+                ))}
+            </>
+        );
+    }
+
+    return (
+        <ScrollView
+            ref={scrollViewRef}
+            style={[Style.main, { display: props.processed ? "flex" : "none" }]}
+        >
+            {content}
         </ScrollView>
-    )
-}
+    );
+};
 
 const Style = StyleSheet.create({
     hr: {
         height: 1,
-        position: 'relative',
-        backgroundColor: 'rgba(255, 255, 255, .25)',
-        margin: 20
+        backgroundColor: "rgba(255, 255, 255, .25)",
+        margin: 20,
     },
     main: {
-        position: 'absolute',
+        position: "absolute",
         top: 120,
         left: 0,
         right: 0,
         bottom: 0,
         paddingHorizontal: 20,
-        paddingVertical: 0,
         marginBottom: 10,
-        gap: 5
+        gap: 5,
     },
     related: {
-        color: '#ffffff',
+        color: "#ffffff",
         marginBottom: 10,
         fontSize: 16,
-        fontWeight: 'bold'
-    }
-})
+        fontWeight: "bold",
+    },
+});
 
-export default Main
+export default Main;
