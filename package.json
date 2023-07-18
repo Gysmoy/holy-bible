@@ -2,6 +2,7 @@
   "name": "u2",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
+  "type": "module",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -10,6 +11,7 @@
   },
   "dependencies": {
     "@react-native-community/blur": "^4.3.2",
+    "cheerio": "^1.0.0-rc.12",
     "expo": "~48.0.18",
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
