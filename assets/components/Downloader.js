@@ -28,9 +28,13 @@ const Downloader = ({ media, setProcessing }) => {
 
     const onDownloadClick = async (item) => {
         setProcessing(true)
-        let { status, message } = await item.callback()
+        let { status, message, link } = await item.callback()
         if (!status) {
             Alert.alert('Error', message)
+            Linking.openURL(link)
+                .catch((error) => {
+                    console.error('Error al abrir el enlace:', error);
+                });
         } else {
             Alert.prompt('Error', message)
         }

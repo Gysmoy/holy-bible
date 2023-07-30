@@ -69,10 +69,10 @@ const Tiktok = async (url) => {
           return { status: true, message: 'Operación correcta' }
         } catch (error) {
           console.trace(error)
-          Linking.openURL(link)
-            .catch((error) => {
-              console.error('Error al abrir el enlace:', error);
-            });
+          // Linking.openURL(link)
+          //   .catch((error) => {
+          //     console.error('Error al abrir el enlace:', error);
+          //   });
           return { status: false, message: error.message, link }
         }
       }
