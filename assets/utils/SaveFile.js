@@ -5,10 +5,7 @@ class SaveFile {
   static byURI = async (uri, filename) => {
     try {
       const res = await fetch(uri);
-      const arrayBuffer = await res.arrayBuffer();
-
-      const bufferObject = Buffer.from(arrayBuffer);
-      const base64 = bufferObject.toString('base64');
+      const blob = await res.blob();
 
       const downloadDir =
         Platform.OS === 'ios'
@@ -17,7 +14,7 @@ class SaveFile {
 
       const fileURI = `${downloadDir}${filename}`;
 
-      await RNFS.writeFile(fileURI, base64, 'base64');
+      await RNFS.writeFile(fileURI, blob);
     } catch (error) {
       throw error;
     }
