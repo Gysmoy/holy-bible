@@ -2,7 +2,6 @@
   "name": "u2",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
-  "type": "module",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -16,7 +15,8 @@
     "expo-status-bar": "~1.4.4",
     "react": "18.2.0",
     "react-native": "0.71.8",
-    "react-native-elements": "^3.4.3"
+    "react-native-elements": "^3.4.3",
+    "react-native-fs": "^2.20.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

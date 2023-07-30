@@ -1,24 +1,22 @@
 import React from 'react';
 import { Clipboard, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const Search = (props) => {
-    const onClick = (id) => {
-        const uri = `https://youtu.be/${id}`;
-        props.setValue(uri);
-        props.searchVideo(uri);
+const Search = ({id, image, title, uri, setValue, searchVideo}) => {
+    const onClick = () => {
+        setValue(id);
+        searchVideo(id);
     };
 
     const onCopy = () => {
-        const uriToCopy = `https://youtu.be/${props.id}`;
-        Clipboard.setString(uriToCopy);
+        Clipboard.setString(id);
     };
 
     return (
-        <TouchableOpacity style={styles.container} onPress={() => onClick(props.id)}>
-            <Image source={{ uri: props.uri }} style={styles.image} />
+        <TouchableOpacity style={styles.container} onPress={onClick}>
+            <Image source={{ uri: image }} style={styles.image} />
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>{props.title}</Text>
-                <Text style={styles.uri} onPress={onCopy}>{`youtu.be/${props.id}`}</Text>
+                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.uri} onPress={onCopy}>{uri}</Text>
             </View>
         </TouchableOpacity>
     );

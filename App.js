@@ -3,12 +3,13 @@ import { StatusBar, StyleSheet, Text, View } from 'react-native';
 
 import Banner from './assets/components/Banner';
 import Main from './assets/components/Main';
+import Tiktok from './assets/rest/Tiktok';
+import YouTube from './assets/rest/YouTube';
 
 const App = () => {
   const [processed, setProcessed] = useState(false);
   const [value, setValue] = useState(null);
   const [result, setResult] = useState({});
-  const [links, setLinks] = useState([]);
   const [processing, setProcessing] = useState(false);
 
   const goHome = () => {
@@ -19,25 +20,20 @@ const App = () => {
 
   const searchVideo = async (query) => {
     setProcessing(true);
+    let data = null
     try {
-      const formdata = new FormData();
-      formdata.append("query", query);
-      formdata.append("vt", "downloader");
-
-      const requestOptions = {
-        method: 'POST',
-        body: formdata,
-        redirect: 'follow'
-      };
-
-      const res = await fetch('https://tomp3.cc/api/ajax/search', requestOptions);
-      const data = await res.json();
-
-      setLinks(data.links ?? []);
+      if (query.includes('tiktok.com') && (query.includes('https://') || query.includes('http://'))) {
+        data = await Tiktok(query)
+      } else {
+        data = await YouTube(query)
+      }
+      if (!data.status) {
+        throw new Error(data.message)
+      }
       setResult(data);
       setProcessed(true);
     } catch (error) {
-      console.error("Error occurred while searching video:", error);
+      console.trace(error.message)
     } finally {
       setProcessing(false);
     }
@@ -58,7 +54,6 @@ const App = () => {
         <Main
           processed={processed}
           result={result}
-          links={links}
           setValue={setValue}
           searchVideo={searchVideo}
           setProcessing={setProcessing}

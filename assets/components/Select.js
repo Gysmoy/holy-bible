@@ -1,31 +1,31 @@
 import React, { useState } from "react";
 import { Modal, ScrollView, Text, TouchableOpacity, StyleSheet, Dimensions } from "react-native";
 
-const Select = (props) => {
+const Select = ({options, onChange, style}) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(props.options ? props.options[0] : null);
+    const [selectedOption, setSelectedOption] = useState(options ? options[0] : null);
 
-    const onChange = (option) => {
+    const onHandleChange = (option) => {
         setModalVisible(false);
         setSelectedOption(option);
-        if (props.onChange) props.onChange(option.value);
+        if (onChange) onChange(option.value);
     };
 
     const screenHeight = Dimensions.get("window").height;
 
     return (
         <>
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={[SelectStyle.selectButton, props.style]}>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={[SelectStyle.selectButton, style]}>
                 <Text style={SelectStyle.selectButtonText}>{selectedOption ? `${selectedOption.label} ‣` : "‣"}</Text>
             </TouchableOpacity>
             <Modal visible={modalVisible} onRequestClose={() => setModalVisible(false)} animationType="slide">
                 <ScrollView style={SelectStyle.container}>
                     <ScrollView contentContainerStyle={[SelectStyle.optionContainer, { minHeight: screenHeight * 0.5 }]}>
                         <Text style={SelectStyle.placeholderText}></Text>
-                        {props.options?.map((option) => (
+                        {options?.map((option) => (
                             <TouchableOpacity
                                 key={option.value}
-                                onPress={() => onChange(option)}
+                                onPress={() => onHandleChange(option)}
                                 style={[
                                     SelectStyle.option,
                                     option.value === selectedOption?.value && SelectStyle.selectedOption,

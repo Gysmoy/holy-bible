@@ -3,53 +3,46 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import Search from "./Search";
 import Downloader from "./Downloader";
 
-const Main = (props) => {
+const Main = ({ processed, result, setValue, searchVideo, setProcessing }) => {
+
     const scrollViewRef = useRef(null);
 
     useEffect(() => {
         if (scrollViewRef.current) {
             scrollViewRef.current.scrollTo({ y: 0 });
         }
-    }, [props.result]);
-
-    const getURI = (id) => {
-        return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-    };
+    }, [result]);
 
     let content = null;
 
-    if (props.result.p === "search") {
-        content = props.result.items.map((e) => (
+    if (result.type === "search") {
+        content = result.list.map((e) => (
             <Search
-                key={e.v}
-                id={e.v}
-                title={e.t}
-                uri={getURI(e.v)}
-                setValue={props.setValue}
-                searchVideo={props.searchVideo}
+                id={e.id}
+                image={e.image}
+                title={e.title}
+                uri={e.uri}
+                setValue={setValue}
+                searchVideo={searchVideo}
             />
         ));
-    } else if (props.result.related && props.result.related.length > 0) {
+    } else {
         content = (
             <>
                 <Downloader
-                    id={props.result.vid}
-                    title={props.result.title}
-                    author={props.result.a}
-                    image={getURI(props.result.vid)}
-                    links={props.links}
-                    setProcessing={props.setProcessing}
+                    media={result.media}
+                    setProcessing={setProcessing}
                 />
                 <View style={Style.hr} />
-                <Text style={Style.related}>Videos relacionados</Text>
-                {props.result.related[0].contents.map((e) => (
+                <Text style={Style.related}>{result.related.length > 0 ? 'Videos relacionados' : ''}</Text>
+                {result.related.map((e) => (
                     <Search
-                        key={e.vid}
-                        id={e.vid}
+                        id={e.id}
+                        image={e.image}
                         title={e.title}
-                        uri={getURI(e.vid)}
-                        setValue={props.setValue}
-                        searchVideo={props.searchVideo}
+                        uri={e.uri}
+                        setValue={setValue}
+                        searchVideo={searchVideo}
                     />
                 ))}
             </>
@@ -59,7 +52,7 @@ const Main = (props) => {
     return (
         <ScrollView
             ref={scrollViewRef}
-            style={[Style.main, { display: props.processed ? "flex" : "none" }]}
+            style={[Style.main, { display: processed ? "flex" : "none" }]}
         >
             {content}
         </ScrollView>

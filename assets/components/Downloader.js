@@ -1,48 +1,16 @@
-import { Image, View, Text, StyleSheet, Button, FlatList, Linking } from "react-native";
+import { Image, View, Text, StyleSheet, Button, FlatList, Linking, Alert } from "react-native";
 import Select from "./Select";
 import { useState, useEffect, useRef } from "react";
+import '../extends/string.extend'
 
-const Downloader = (props) => {
+const Downloader = ({ media, setProcessing }) => {
     const flatListRef = useRef(null);
-    let formats = Object.keys(props.links)?.map((f) => {
-        return {
-            value: f,
-            label: `Formato: ${f.toUpperCase()}`,
-        };
-    });
-
+    let formats = media.formats
     const [selectedFormat, setSelectedFormat] = useState(formats[0]?.value);
     const [qualities, setQualities] = useState([]);
 
     useEffect(() => {
-        const formatQuality = (value) => {
-            let qs = props.links[value];
-            let items = [];
-            for (const i in qs) {
-                let item = qs[i];
-                items.push({
-                    token: item.k,
-                    quality: item.q,
-                    label: item.q_text,
-                    size: item.size,
-                });
-            }
-            items = items.sort((a, b) => {
-                let q_a = Number(a.quality.replace(/[^0-9.-]/g, "") || "0");
-                let q_b = Number(b.quality.replace(/[^0-9.-]/g, "") || "0");
-                return q_a - q_b;
-            }).map((item, x) => {
-                if (item.size == 'MB') {
-                    let lastSize = Number(String(items[x - 1]?.size).replace(/[^0-9.-]/g, '') || 0)
-                    let nextSize = Number(String(items[x + 1]?.size).replace(/[^0-9.-]/g, '') || 0)
-                    item.size = `${(lastSize + nextSize) / 2} MB`
-                }
-                return item
-            });
-            return items;
-        };
-
-        const newQualities = formatQuality(selectedFormat);
+        const newQualities = media.links[selectedFormat];
         setQualities(newQualities);
 
         if (flatListRef.current && newQualities.length > 0) {
@@ -52,63 +20,42 @@ const Downloader = (props) => {
                 console.log('Error controlado:', error.message)
             }
         }
-    }, [props.links, selectedFormat]);
+    }, [media.links, selectedFormat]);
 
     const onFormatChange = (value) => {
         setSelectedFormat(value);
     };
 
-    const downloadMedia = async (token) => {
-
-        props.setProcessing(true)
-
-        const formdata = new FormData();
-        formdata.append("vid", props.id);
-        formdata.append("k", token);
-
-        const requestOptions = {
-            method: 'POST',
-            body: formdata,
-            redirect: 'follow'
-        };
-        let res = await fetch('https://tomp3.cc/api/ajax/convert', requestOptions)
-        let data = await res.json()
-
-        let link = data.dlink
-        let name = data.title
-        let author = props.author
-        let type = data.ftype
-
-        let filename = `${name}.${type}`
-
-        props.setProcessing(false)
-
-        Linking.openURL(link)
-            .catch((error) => {
-                console.error('Error al abrir el enlace:', error);
-            });
+    const onDownloadClick = async (item) => {
+        setProcessing(true)
+        let { status, message } = await item.callback()
+        if (!status) {
+            Alert.alert('Error', message)
+        } else {
+            Alert.prompt('Error', message)
+        }
+        setProcessing(false)
     }
 
     const renderItem = ({ item }) => {
-        let key = `${item.token}-${item.quality}-${item.size || "any"}`;
         return (
             <View style={Style.downloadButton}>
                 <Button
-                    key={key}
-                    title={`${item.quality} ${item.size ? `[${item.size}]` : ""}`.trim()}
+                    title={item.label}
                     color="rgba(3, 141, 232, 255)"
-                    onPress={() => downloadMedia(item.token)}/>
+                    onPress={() => { onDownloadClick(item) }} />
             </View>
         );
     };
 
     return (
         <>
-            <Image source={{ uri: props.image }} style={Style.image} />
+            <Image source={{ uri: media.image }} style={Style.image} />
+            {media.avatar ? <Image source={{ uri: media.avatar }} style={Style.avatar} /> : ''}
             <View style={Style.titleContainer}>
-                <Text style={Style.author}>{props.author}</Text>
-                <Text style={Style.title}>{props.title}</Text>
-                <Text style={Style.uri}>{`youtu.be/${props.id}`}</Text>
+                <Text style={Style.author}>{media.author || 'Sin autor'}</Text>
+                <Text style={Style.title}>{(media.description || 'Sin descripción').reduce(128)}</Text>
+                <Text style={Style.uri}>{media.link}</Text>
             </View>
             <Select options={formats} style={Style.select} onChange={onFormatChange} />
             <FlatList
@@ -130,6 +77,19 @@ const Style = StyleSheet.create({
         width: 240,
         height: 150,
         borderRadius: 5,
+        backgroundColor: 'rgba(255, 255, 255, 0.0625)'
+    },
+    avatar: {
+        position: 'absolute',
+        top: 5,
+        borderRadius: 25,
+        overflow: 'hidden',
+        alignSelf: "center",
+        width: 52,
+        height: 52,
+        borderWidth: 2,
+        borderColor: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.0625)'
     },
     title: {
         textAlign: "center",
