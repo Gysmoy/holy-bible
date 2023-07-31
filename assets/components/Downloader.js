@@ -2,6 +2,7 @@ import { Image, View, Text, StyleSheet, Button, FlatList, Linking, Alert } from 
 import Select from "./Select";
 import { useState, useEffect, useRef } from "react";
 import '../extends/string.extend'
+import StoragePermission from "../utils/StoragePermission";
 
 const Downloader = ({ media, setProcessing }) => {
     const flatListRef = useRef(null);
@@ -28,6 +29,7 @@ const Downloader = ({ media, setProcessing }) => {
 
     const onDownloadClick = async (item) => {
         setProcessing(true)
+        await StoragePermission()
         let { status, message, link } = await item.callback()
         if (!status) {
             Alert.alert('Error', message)
@@ -36,7 +38,7 @@ const Downloader = ({ media, setProcessing }) => {
                     console.error('Error al abrir el enlace:', error);
                 });
         } else {
-            Alert.prompt('Error', message)
+            Alert.alert('Correcto', 'El archivo se ha guardado correctamente')
         }
         setProcessing(false)
     }
