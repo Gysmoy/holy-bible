@@ -30,7 +30,7 @@ const Downloader = ({ media, setProcessing }) => {
     const onDownloadClick = async (item) => {
         setProcessing(true)
         await StoragePermission()
-        let { status, message, link } = await item.callback()
+        let { status, message, link, path } = await item.callback()
         if (!status) {
             Alert.alert('Error', message)
             Linking.openURL(link)
@@ -38,7 +38,7 @@ const Downloader = ({ media, setProcessing }) => {
                     console.error('Error al abrir el enlace:', error);
                 });
         } else {
-            Alert.alert('Correcto', 'El archivo se ha guardado correctamente')
+            Alert.alert('Correcto', `El archivo se ha guardado correctamente en: ${path}`)
         }
         setProcessing(false)
     }

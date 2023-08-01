@@ -1,12 +1,9 @@
-import { Alert, Platform } from "react-native";
+import { Platform } from "react-native";
 import RNFS from 'react-native-fs';
 
 class SaveFile {
   static createDirectory = async () => {
-    const downloadDir =
-      Platform.OS === 'ios'
-        ? RNFS.DocumentDirectoryPath
-        : `${RNFS.CachesDirectoryPath}/downloads/`;
+    const downloadDir = `${RNFS.ExternalStorageDirectoryPath}/Android/data/com.sodeworld.u2/files/Download/`;
 
     try {
       await RNFS.mkdir(downloadDir);
@@ -22,14 +19,12 @@ class SaveFile {
       const res = await fetch(uri);
       const blob = await res.blob();
 
-      const downloadDir =
-        Platform.OS === 'ios'
-          ? RNFS.DocumentDirectoryPath
-          : `${RNFS.CachesDirectoryPath}/downloads/`;
+      const downloadDir = `${RNFS.ExternalStorageDirectoryPath}/Android/data/com.sodeworld.u2/files/Download/`;
 
       const fileURI = `${downloadDir}${filename}`;
 
       await RNFS.writeFile(fileURI, blob);
+      return fileURI
     } catch (error) {
       throw error;
     }

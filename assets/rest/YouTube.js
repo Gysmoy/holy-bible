@@ -59,9 +59,9 @@ const YouTube = async (query) => {
 
             // El archivo intenta guardarse, si falla abre el link
             try {
-              const filename = `sode_youtube_${Date.now()}.${ext}`
-              await SaveFile.byURI(mediaLink, filename)
-              return { status: true, message: 'Operación correcta' }
+              const filename = `${description}.${ext}`
+              const fileURI = await SaveFile.byURI(mediaLink, filename)
+              return { status: true, message: 'Operación correcta', path: fileURI }
             } catch (error) {
               console.trace(error)
               // Linking.openURL(mediaLink)

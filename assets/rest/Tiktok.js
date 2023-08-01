@@ -65,8 +65,8 @@ const Tiktok = async (url) => {
         // El archivo intenta guardarse, si falla abre el link
         try {
           const filename = `sode_tiktok_${Date.now()}.${ext}`
-          await SaveFile.byURI(link, filename)
-          return { status: true, message: 'Operación correcta' }
+          const fileURI = await SaveFile.byURI(link, filename)
+          return { status: true, message: 'Operación correcta', path: fileURI }
         } catch (error) {
           console.trace(error)
           // Linking.openURL(link)
